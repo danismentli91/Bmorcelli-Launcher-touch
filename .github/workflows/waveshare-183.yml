@@ -29,5 +29,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: Launcher-Waveshare-ESP32-S3-Touch-LCD-1.83
-          path: .pio/build/waveshare-esp32-s3-touch-lcd-183/*.bin
+          path: |
+            Launcher-waveshare-esp32-s3-touch-lcd-183.bin
+            .pio/build/waveshare-esp32-s3-touch-lcd-183/*.bin
           if-no-files-found: error
