@@ -112,3 +112,5 @@ jobs:
           if-no-files-found: error
 
 # Waveshare 1.83 build target
+
+# Actions enabled trigger
