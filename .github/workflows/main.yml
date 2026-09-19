@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - waveshare-esp32-s3-touch-lcd-183
   workflow_dispatch:
 
 jobs:
@@ -83,6 +84,7 @@ jobs:
             - { env: "elecrow-35B"                }
             - { env: "elecrow-35Bv2_2"            }
             - { env: "waveshare-esp32-s3-lcd-147" }
+            - { env: "waveshare-esp32-s3-touch-lcd-183" }
             - { env: "xueersi-xiaomiao" }  
 
     steps:
