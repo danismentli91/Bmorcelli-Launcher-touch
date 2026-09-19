@@ -113,3 +113,5 @@ jobs:
           path: |
             **/*.bin
           if-no-files-found: error
+
+# CI trigger 2
