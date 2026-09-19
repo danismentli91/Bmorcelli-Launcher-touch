@@ -21,7 +21,10 @@ jobs:
       - name: Install PlatformIO
         run: python -m pip install --upgrade platformio requests esptool
       - name: Build
-        run: platformio run -e waveshare-esp32-s3-touch-lcd-183
+        run: |
+          echo "Board manifests:"
+          ls -la boards/_jsonfiles | grep waveshare || true
+          platformio run -e waveshare-esp32-s3-touch-lcd-183
       - name: Upload firmware
         uses: actions/upload-artifact@v6
         with:
