@@ -1012,7 +1012,7 @@ int loopOptions(std::vector<Option> &options, bool bright, uint16_t al, uint16_t
             displayScrollingText(txt, coord);
         }
 
-#if defined(T_EMBED) || defined(HAS_TOUCH) || defined(HAS_KEYBOARD)
+#if defined(T_EMBED) || defined(HAS_TOUCH) || defined(HAS_KEYBOARD) || defined(HAS_DISCRETE_INPUT)
 #if defined(HAS_TOUCH)
         if (border == false) EscPress = false;
         if (touchPoint.pressed) {
@@ -1168,7 +1168,7 @@ void loopVersions(const String &_fid) {
 
         /* UP Btn go back to FW menu and ´<´ go to previous version item */
 
-#if defined(T_EMBED) || defined(HAS_TOUCH) || defined(HAS_KEYBOARD)
+#if defined(T_EMBED) || defined(HAS_TOUCH) || defined(HAS_KEYBOARD) || defined(HAS_DISCRETE_INPUT)
         /* UP Btn go to previous item */
         if (check(PrevPress)) {
             versionIndex--;

@@ -261,7 +261,7 @@ void settings_menu() {
                  saveConfigs();
              }                                                 },
 #endif
-#if !defined(LYLYGO_TDECK_PRO)
+#if !defined(LYLYGO_TDECK_PRO) && !defined(FIXED_PORTRAIT)
             {"Orientation", [=]() {
                  gsetRotation(true);
                  saveConfigs();
@@ -347,6 +347,13 @@ void getBrightness() {
 **********************************************************************/
 #define DRV 1
 int gsetRotation(bool set) {
+#if defined(FIXED_PORTRAIT)
+    rotation = ROTATION;
+    tftWidth = TFT_WIDTH;
+    tftHeight = TFT_HEIGHT;
+    tft->setRotation(rotation);
+    return rotation;
+#endif
     int result = ROTATION;
 
     if (rotation > 3) {
@@ -690,6 +697,9 @@ bool getFromNVS() {
     err |= nvsHandle->get_item("autoBackup", autoBackup);
     err |= nvsHandle->get_item("askSpiffs", askSpiffs);
     err |= nvsHandle->get_item("rotation", rotation);
+#if defined(FIXED_PORTRAIT)
+    rotation = ROTATION; // Ignore landscape saved by older firmware.
+#endif
     err |= nvsHandle->get_item("FGCOLOR", FGCOLOR);
     err |= nvsHandle->get_item("BGCOLOR", BGCOLOR);
     err |= nvsHandle->get_item("ALCOLOR", ALCOLOR);
@@ -895,6 +905,9 @@ void getConfigs() {
         count++;
         log_i("getConfigs: missing rotation");
     }
+#if defined(FIXED_PORTRAIT)
+    rotation = ROTATION;
+#endif
 
 #ifndef E_PAPER_DISPLAY
     if (setting["FGCOLOR"].is<uint16_t>()) FGCOLOR = setting["FGCOLOR"].as<uint16_t>();

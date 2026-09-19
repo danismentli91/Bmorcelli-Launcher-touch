@@ -297,7 +297,7 @@ void setup() {
         }
 #endif
         // Direct input check for startup - bypass check() function to avoid task suspension
-#if defined(HAS_1_BUTTON)
+#if defined(HAS_1_BUTTON) || defined(HAS_DISCRETE_INPUT)
         if (check(SelPress) || check(NextPress))
 #else
         if (check(SelPress))

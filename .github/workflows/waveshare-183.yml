@@ -20,16 +20,22 @@ jobs:
           python-version: '3.13'
       - name: Install PlatformIO
         run: python -m pip install --upgrade platformio requests esptool
+      - name: Input regression tests
+        run: |
+          g++ -std=c++11 -Wall -Wextra -Werror tests/waveshare183_input_test.cpp -o /tmp/waveshare183-input-test
+          /tmp/waveshare183-input-test
       - name: Build
         run: |
           echo "Board manifests:"
           ls -la boards/_jsonfiles | grep waveshare || true
           platformio run -e waveshare-esp32-s3-touch-lcd-183
+      - name: Verify merged full-flash image
+        run: python support_files/verify_waveshare183_bin.py
       - name: Upload firmware
         uses: actions/upload-artifact@v6
         with:
           name: Launcher-Waveshare-ESP32-S3-Touch-LCD-1.83
           path: |
             Launcher-waveshare-esp32-s3-touch-lcd-183.bin
-            .pio/build/waveshare-esp32-s3-touch-lcd-183/*.bin
+            Launcher-waveshare-esp32-s3-touch-lcd-183.bin.sha256
           if-no-files-found: error

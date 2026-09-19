@@ -17,7 +17,12 @@
 #include <esp_partition.h>
 #include <globals.h>
 #include <memory>
+#if defined(WAVESHARE_ESP32_S3_TOUCH_LCD_183)
+// LCD uses global SPI (FSPI). SD is on different wires and must use SPI3.
+SPIClass sdcardSPI(HSPI);
+#else
 SPIClass sdcardSPI;
+#endif
 String fileToCopy;
 String fileToUse;
 
