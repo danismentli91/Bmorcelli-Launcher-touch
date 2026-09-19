@@ -2,6 +2,7 @@
 #include "powerSave.h"
 #include <Arduino.h>
 #include <interface.h>
+#include <Wire.h>
 
 /*
  * Waveshare ESP32-S3-Touch-LCD-1.83
@@ -9,6 +10,14 @@
  * I2C SDA=15 SCL=14, touch RST=39 INT=13, BOOT=GPIO0.
  * Touch gesture support is added in the next pass after CST816 integration.
  */
+static bool touchPressed() {
+    Wire.beginTransmission(0x15);
+    Wire.write(0x02); // FingerNum register
+    if (Wire.endTransmission(false) != 0) return false;
+    if (Wire.requestFrom(0x15, 1) != 1) return false;
+    return (Wire.read() & 0x0F) > 0;
+}
+
 void _setup_gpio() {
     pinMode(TFT_BL, OUTPUT);
     launcherGpioWrite(TFT_BL, HIGH);
@@ -24,6 +33,12 @@ void _setup_gpio() {
     launcherGpioWrite(TFT_RST, HIGH);
     launcherDelayMs(120);
     launcherGpioInputPullup(SEL_BTN);
+    Wire.begin(TOUCH_SDA, TOUCH_SCL);
+    pinMode(TOUCH_RST, OUTPUT);
+    digitalWrite(TOUCH_RST, LOW);
+    delay(10);
+    digitalWrite(TOUCH_RST, HIGH);
+    pinMode(TOUCH_INT, INPUT_PULLUP);
 }
 
 void _post_setup_gpio() {}
@@ -54,6 +69,23 @@ void InputHandler(void) {
     if (pendingNext && launcherMillis() - pendingAt > doubleMs) {
         NextPress = true;
         pendingNext = false;
+    }
+
+    // Touch: tap=Select, double tap=Back. A touch also wakes a sleeping screen.
+    static bool touchWasDown = false;
+    static unsigned long lastTap = 0;
+    bool touchDown = touchPressed();
+    if (touchDown && !touchWasDown) {
+        touchWasDown = true;
+        AnyKeyPress = true;
+        if (wakeUpScreen()) return;
+    }
+    if (!touchDown && touchWasDown) {
+        touchWasDown = false;
+        unsigned long now = launcherMillis();
+        if (now - lastTap <= doubleMs) { EscPress = true; lastTap = 0; }
+        else { SelPress = true; lastTap = now; }
+        AnyKeyPress = true;
     }
 
     bool down = launcherGpioRead(SEL_BTN) == LOW;
