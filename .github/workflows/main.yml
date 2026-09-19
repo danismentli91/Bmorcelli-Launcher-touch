@@ -8,6 +8,8 @@ on:
       - waveshare-esp32-s3-touch-lcd-183
   workflow_dispatch:
 
+# waveshare-1.83 build trigger
+
 jobs:
   build:
     runs-on: ubuntu-latest
